@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motoring</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #1E2529;
+      --muted: #888;
+      --accent: #C9A98E;
+    }
+
+    body {
+      background: var(--ink);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    #banner {
+      display: block;
+      max-width: 25%;
+      height: auto;
+      margin: 0 auto 8px;
+    }
+
+    main {
+      padding: 0 4rem 5rem;
+    }
+
+    .gallery-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    #gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .row {
+      display: flex;
+      gap: 0;
+    }
+
+    .photo {
+      overflow: hidden;
+      background: #1a1a1a;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .photo img.loaded {
+      opacity: 1;
+    }
+
+    .photo:hover img.loaded {
+      transform: scale(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+      pointer-events: none;
+    }
+
+    .overlay-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      main { padding: 0 2rem 4rem; }
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 0 1rem 3rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .photo img, .photo-overlay { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<img id="banner" src="https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/TitleImage.jpg" alt="Very Small Foot">
+
+<main>
+  <p class="gallery-label">Motoring</p>
+  <div id="gallery"></div>
+</main>
+
+<script>
+  const GAP      = 0;
+  const TARGET_H = 240; // desired row height on wide viewports
+
+  // Row height scales down on narrow viewports; images still pack multiple
+  // per row (justified fill) rather than forcing one-per-row.
+  function targetHeight(width) {
+    if (width < 500)  return 160;
+    if (width < 800)  return 190;
+    if (width < 1200) return 220;
+    return TARGET_H;
+  }
+
+  // Local thumbnails, relative to this file's location in Claude/VerySmallFoot.
+  const BASE_URL   = 'https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/';
+  const PHOTO_LINK = 'https://photos.app.goo.gl/gwe4wzxTrQJW8yMU9';
+
+  // Aspect ratios are filled in by preloadAspects() before the first render.
+  // Titles below are placeholders — edit each entry individually to customize
+  // the title or link per image.
+  const IMAGES = [
+    { src: `${BASE_URL}Motoring06.jpg`, aspect: 3/2, title: 'The Twins', link: PHOTO_LINK },
+    { src: `${BASE_URL}Motoring05.jpg`, aspect: 3/2, title: 'Rag Top', link: PHOTO_LINK },
+    { src: `${BASE_URL}Motoring04.jpg`, aspect: 3/2, title: 'Delivery Day', link: PHOTO_LINK },
+    { src: `${BASE_URL}Motoring03.jpg`, aspect: 3/2, title: 'Fall Colors', link: PHOTO_LINK },
+    { src: `${BASE_URL}Motoring02.jpg`, aspect: 3/2, title: 'Auto Show 2005', link: PHOTO_LINK },
+    { src: `${BASE_URL}Motoring01.jpg`, aspect: 3/2, title: 'Auto Show 2003', link: PHOTO_LINK },
+  ];
+
+  function preloadAspects() {
+    return Promise.all(IMAGES.map((img, i) => new Promise((resolve) => {
+      const probe = new Image();
+      probe.onload  = () => { IMAGES[i].aspect = probe.naturalWidth / probe.naturalHeight; resolve(); };
+      probe.onerror = resolve;
+      probe.src = img.src;
+    })));
+  }
+
+  // Justified layout: greedily fill each row to the container width at the
+  // target height, then scale the row so it fits exactly. Accumulate images
+  // until their natural width reaches the container, then commit the row.
+  function computeLayout(images, totalWidth, target) {
+    const rows = [];
+    let start = 0, sumAspects = 0;
+
+    for (let i = 0; i < images.length; i++) {
+      sumAspects += images[i].aspect;
+      const count   = i - start + 1;
+      const natural = target * sumAspects + GAP * (count - 1);
+      if (natural >= totalWidth) {
+        const h = (totalWidth - GAP * (count - 1)) / sumAspects;
+        rows.push({ start, end: i + 1, height: h, full: true });
+        start = i + 1; sumAspects = 0;
+      }
+    }
+
+    // Last (partial) row keeps the target height; a lone wide image is capped
+    // so it never exceeds the container width.
+    if (start < images.length) {
+      const single = images.length - start === 1;
+      const h = single ? Math.min(target, totalWidth / images[start].aspect) : target;
+      rows.push({ start, end: images.length, height: h, full: false });
+    }
+
+    return rows;
+  }
+
+  function render() {
+    const gallery = document.getElementById('gallery');
+    const W = gallery.clientWidth;
+    if (!W) return;
+
+    gallery.innerHTML = '';
+
+    const target = targetHeight(W);
+    computeLayout(IMAGES, W, target).forEach(({ start, end, height, full }) => {
+      const h = Math.round(height);
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.style.height = h + 'px';
+
+      // Widths from the exact (unrounded) row height. For full rows, round each
+      // tile's cumulative right edge rather than its width, so rounding never
+      // accumulates and the last tile lands exactly on the container edge.
+      const avail = W - GAP * (end - start - 1);
+      let edge = 0, prevEdge = 0;
+
+      for (let i = start; i < end; i++) {
+        const { src, aspect, title, link } = IMAGES[i];
+
+        const item = document.createElement('a');
+        item.className = 'photo';
+        item.href = link;
+        item.target = '_blank';
+        item.rel = 'noopener noreferrer';
+
+        let w;
+        if (full) {
+          edge += height * aspect;
+          const rounded = Math.min(Math.round(edge), avail);
+          w = rounded - prevEdge;
+          prevEdge = rounded;
+        } else {
+          w = Math.round(h * aspect);
+        }
+        item.style.width = w + 'px';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = title;
+        img.loading = 'lazy';
+        img.addEventListener('load', () => img.classList.add('loaded'));
+        item.appendChild(img);
+
+        // Only draw the caption overlay when there's a title to show.
+        if (title) {
+          const overlay = document.createElement('div');
+          overlay.className = 'photo-overlay';
+          overlay.innerHTML = `<div class="overlay-title">${title}</div>`;
+          item.appendChild(overlay);
+        }
+
+        row.appendChild(item);
+      }
+
+      gallery.appendChild(row);
+    });
+  }
+
+  // ── Responsive re-layout ──────────────────────────────────────────────────
+
+  let raf;
+  const ro = new ResizeObserver(() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(render);
+  });
+  ro.observe(document.getElementById('gallery'));
+
+  preloadAspects().then(render);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --ink: #1E2529;
+      --muted: #888;
+      --accent: #C9A98E;
+    }
+
+    body {
+      background: var(--ink);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    #banner {
+      display: block;
+      max-width: 25%;
+      height: auto;
+      margin: 0 auto 8px;
+    }
+
+    main {
+      padding: 0 4rem 5rem;
+    }
+
+    .gallery-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    #gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .row {
+      display: flex;
+      gap: 0;
+    }
+
+    .photo {
+      overflow: hidden;
+      background: #1a1a1a;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .photo img.loaded {
+      opacity: 1;
+    }
+
+    .photo:hover img.loaded {
+      transform: scale(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      opacity: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1rem;
+      pointer-events: none;
+    }
+
+    .overlay-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+
+    .overlay-meta {
+      font-size: 0.68rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      main { padding: 0 2rem 4rem; }
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 0 1rem 3rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .photo img, .photo-overlay { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<img id="banner" src="https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/TitleImage.jpg" alt="Very Small Foot">
+
+<main>
+  <p class="gallery-label">Photolog</p>
+  <div id="gallery"></div>
+</main>
+
+<script>
+  const GAP      = 0;
+  const TARGET_H = 240; // desired row height on wide viewports
+
+  // Row height scales down on narrow viewports; images still pack multiple
+  // per row (justified fill) rather than forcing one-per-row.
+  function targetHeight(width) {
+    if (width < 500)  return 160;
+    if (width < 800)  return 190;
+    if (width < 1200) return 220;
+    return TARGET_H;
+  }
+
+  const BASE_URL   = 'https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/';
+  const PHOTO_LINK = 'https://photos.app.goo.gl/gwe4wzxTrQJW8yMU9';
+
+  // Aspect ratios are filled in by preloadAspects() before the first render.
+  // Edit each entry individually to customize title, meta, or link per image.
+  const IMAGES = [
+    { src: `${BASE_URL}089.jpg`, aspect: 3/2, title: 'Flagstaff', meta: '2022', link: PHOTO_LINK },
+    { src: `${BASE_URL}088.jpg`, aspect: 3/2, title: 'Page', meta: '2022', link: PHOTO_LINK },
+    { src: `${BASE_URL}087.jpg`, aspect: 3/2, title: 'Grand Canyon', meta: '2022', link: PHOTO_LINK },
+    { src: `${BASE_URL}086.jpg`, aspect: 3/2, title: 'Santa Fe', meta: '2021', link: PHOTO_LINK },
+    { src: `${BASE_URL}085.jpg`, aspect: 3/2, title: 'Los Alamos', meta: '2021', link: PHOTO_LINK },
+    { src: `${BASE_URL}084.jpg`, aspect: 3/2, title: 'Albuquerque', meta: '2021', link: PHOTO_LINK },
+    { src: `${BASE_URL}083.jpg`, aspect: 3/2, title: 'District', meta: '2021', link: PHOTO_LINK },
+    { src: `${BASE_URL}082.jpg`, aspect: 3/2, title: 'Philly', meta: '2021', link: PHOTO_LINK },
+    { src: `${BASE_URL}081.jpg`, aspect: 3/2, title: 'The Lockdown Year', meta: '2020', link: PHOTO_LINK },
+    { src: `${BASE_URL}080.jpg`, aspect: 3/2, title: 'London', meta: '2019', link: PHOTO_LINK },
+    { src: `${BASE_URL}079.jpg`, aspect: 3/2, title: 'Florence', meta: '2019', link: PHOTO_LINK },
+    { src: `${BASE_URL}078.jpg`, aspect: 3/2, title: 'Lucca', meta: '2019', link: PHOTO_LINK },
+    { src: `${BASE_URL}077.jpg`, aspect: 3/2, title: 'Pisa', meta: '2019', link: PHOTO_LINK },
+    { src: `${BASE_URL}076.jpg`, aspect: 3/2, title: 'Seville', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}075.jpg`, aspect: 3/2, title: 'Cordoba', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}074.jpg`, aspect: 3/2, title: 'Granada', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}073.jpg`, aspect: 3/2, title: 'Munich', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}072.jpg`, aspect: 3/2, title: 'Salzburg', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}071.jpg`, aspect: 3/2, title: 'Dachau', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}070.jpg`, aspect: 3/2, title: 'Nuremberg', meta: '2018', link: PHOTO_LINK },
+    { src: `${BASE_URL}069.jpg`, aspect: 3/2, title: 'Madrid', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}068.jpg`, aspect: 3/2, title: 'Segovia', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}067.jpg`, aspect: 3/2, title: 'Toledo', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}066.jpg`, aspect: 3/2, title: 'El Escorial', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}065.jpg`, aspect: 3/2, title: 'Ephrata Cloister', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}064.jpg`, aspect: 3/2, title: 'Prague', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}063.jpg`, aspect: 3/2, title: 'Kutna Hora', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}062.jpg`, aspect: 3/2, title: 'Terezin', meta: '2017', link: PHOTO_LINK },
+    { src: `${BASE_URL}061.jpg`, aspect: 3/2, title: 'New York', meta: '2016', link: PHOTO_LINK },
+    { src: `${BASE_URL}060.jpg`, aspect: 3/2, title: 'Vienna', meta: '2016', link: PHOTO_LINK },
+    { src: `${BASE_URL}059.jpg`, aspect: 3/2, title: 'Melk', meta: '2016', link: PHOTO_LINK },
+    { src: `${BASE_URL}058.jpg`, aspect: 3/2, title: 'Bratislava', meta: '2016', link: PHOTO_LINK },
+    { src: `${BASE_URL}057.jpg`, aspect: 3/2, title: 'Philly', meta: '2016', link: PHOTO_LINK },
+    { src: `${BASE_URL}056.jpg`, aspect: 3/2, title: 'Rome', meta: '2015', link: PHOTO_LINK },
+    { src: `${BASE_URL}055.jpg`, aspect: 3/2, title: 'Vatican', meta: '2015', link: PHOTO_LINK },
+    { src: `${BASE_URL}054.jpg`, aspect: 3/2, title: 'Ostia Antica', meta: '2015', link: PHOTO_LINK },
+    { src: `${BASE_URL}053.jpg`, aspect: 3/2, title: 'Naples/Pompeii', meta: '2015', link: PHOTO_LINK },
+    { src: `${BASE_URL}052.jpg`, aspect: 3/2, title: 'Paris', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}051.jpg`, aspect: 3/2, title: 'Versailles', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}050.jpg`, aspect: 3/2, title: 'Senlis/Creil', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}049.jpg`, aspect: 3/2, title: 'Venice', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}048.jpg`, aspect: 3/2, title: 'Torcello', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}047.jpg`, aspect: 3/2, title: 'Burano', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}046.jpg`, aspect: 3/2, title: 'Murano', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}045.jpg`, aspect: 3/2, title: 'Padova', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}044.jpg`, aspect: 3/2, title: 'Lido', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}043.jpg`, aspect: 3/2, title: 'April', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}042.jpg`, aspect: 3/2, title: 'March', meta: '2014', link: PHOTO_LINK },
+    { src: `${BASE_URL}041.jpg`, aspect: 3/2, title: 'December', meta: '2013', link: PHOTO_LINK },
+    { src: `${BASE_URL}040.jpg`, aspect: 3/2, title: 'Hawk Mountain', meta: '2013', link: PHOTO_LINK },
+    { src: `${BASE_URL}039.jpg`, aspect: 3/2, title: 'Athens', meta: '2013', link: PHOTO_LINK },
+    { src: `${BASE_URL}038.jpg`, aspect: 3/2, title: 'Solomon Island', meta: '2013', link: PHOTO_LINK },
+    { src: `${BASE_URL}037.jpg`, aspect: 3/2, title: 'April', meta: '2013', link: PHOTO_LINK },
+    { src: `${BASE_URL}036.jpg`, aspect: 3/2, title: 'August', meta: '2012', link: PHOTO_LINK },
+    { src: `${BASE_URL}035.jpg`, aspect: 3/2, title: 'July', meta: '2012', link: PHOTO_LINK },
+    { src: `${BASE_URL}034.jpg`, aspect: 3/2, title: 'May', meta: '2012', link: PHOTO_LINK },
+    { src: `${BASE_URL}033.jpg`, aspect: 3/2, title: 'April', meta: '2012', link: PHOTO_LINK },
+    { src: `${BASE_URL}032.jpg`, aspect: 3/2, title: 'May', meta: '2011', link: PHOTO_LINK },
+    { src: `${BASE_URL}031.jpg`, aspect: 3/2, title: 'New York', meta: '2011', link: PHOTO_LINK },
+    { src: `${BASE_URL}030.jpg`, aspect: 3/2, title: 'Washington', meta: '2011', link: PHOTO_LINK },
+    { src: `${BASE_URL}029.jpg`, aspect: 3/2, title: 'Philly', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}028.jpg`, aspect: 3/2, title: 'Washington', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}027.jpg`, aspect: 3/2, title: 'Masonic Temple', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}026.jpg`, aspect: 3/2, title: 'Lancaster', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}025.jpg`, aspect: 3/2, title: 'October', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}024.jpg`, aspect: 3/2, title: 'September', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}023.jpg`, aspect: 3/2, title: 'July', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}022.jpg`, aspect: 3/2, title: 'Market East', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}021.jpg`, aspect: 3/2, title: 'Logan Square', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}020.jpg`, aspect: 3/2, title: 'New York', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}019.jpg`, aspect: 3/2, title: 'April', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}018.jpg`, aspect: 3/2, title: 'March', meta: '2010', link: PHOTO_LINK },
+    { src: `${BASE_URL}017.jpg`, aspect: 3/2, title: 'Pandas', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}016.jpg`, aspect: 3/2, title: 'Philly', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}015.jpg`, aspect: 3/2, title: 'Franklin Institute', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}014.jpg`, aspect: 3/2, title: 'Snow', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}013.jpg`, aspect: 3/2, title: 'October', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}012.jpg`, aspect: 3/2, title: 'September', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}011.jpg`, aspect: 3/2, title: 'Josh Birthday', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}010.jpg`, aspect: 3/2, title: 'June', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}009.jpg`, aspect: 3/2, title: 'May', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}008.jpg`, aspect: 3/2, title: 'Winterthur', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}007.jpg`, aspect: 3/2, title: 'Washington', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}006.jpg`, aspect: 3/2, title: 'April', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}005.jpg`, aspect: 3/2, title: 'March', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}004.jpg`, aspect: 3/2, title: 'February', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}003.jpg`, aspect: 3/2, title: 'January', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}002.jpg`, aspect: 3/2, title: 'December', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}001.jpg`, aspect: 3/2, title: 'November', meta: '2009', link: PHOTO_LINK },
+    { src: `${BASE_URL}N70.jpg`, aspect: 3/2, title: 'N70 Scans', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Candids.jpg`, aspect: 3/2, title: 'Candids', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Flora.jpg`, aspect: 3/2, title: 'Flora', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Portraits.jpg`, aspect: 3/2, title: 'Portraits', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Lillies.jpg`, aspect: 3/2, title: 'Lillies', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Studio.jpg`, aspect: 3/2, title: 'Studio', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Monochrome.jpg`, aspect: 3/2, title: 'Monochrome', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Miscellaneous.jpg`, aspect: 3/2, title: 'Miscellaneous', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Abstract.jpg`, aspect: 3/2, title: 'Abstract', meta: 'Collection', link: PHOTO_LINK },
+    { src: `${BASE_URL}Macros.jpg`, aspect: 3/2, title: 'Macros', meta: 'Collection', link: PHOTO_LINK },
+  ];
+
+  function preloadAspects() {
+    return Promise.all(IMAGES.map((img, i) => new Promise((resolve) => {
+      const probe = new Image();
+      probe.onload  = () => { IMAGES[i].aspect = probe.naturalWidth / probe.naturalHeight; resolve(); };
+      probe.onerror = resolve;
+      probe.src = img.src;
+    })));
+  }
+
+  // Justified layout: greedily fill each row to the container width at the
+  // target height, then scale the row so it fits exactly. Accumulate images
+  // until their natural width reaches the container, then commit the row.
+  function computeLayout(images, totalWidth, target) {
+    const rows = [];
+    let start = 0, sumAspects = 0;
+
+    for (let i = 0; i < images.length; i++) {
+      sumAspects += images[i].aspect;
+      const count   = i - start + 1;
+      const natural = target * sumAspects + GAP * (count - 1);
+      if (natural >= totalWidth) {
+        const h = (totalWidth - GAP * (count - 1)) / sumAspects;
+        rows.push({ start, end: i + 1, height: h, full: true });
+        start = i + 1; sumAspects = 0;
+      }
+    }
+
+    // Last (partial) row keeps the target height; a lone wide image is capped
+    // so it never exceeds the container width.
+    if (start < images.length) {
+      const single = images.length - start === 1;
+      const h = single ? Math.min(target, totalWidth / images[start].aspect) : target;
+      rows.push({ start, end: images.length, height: h, full: false });
+    }
+
+    return rows;
+  }
+
+  function render() {
+    const gallery = document.getElementById('gallery');
+    const W = gallery.clientWidth;
+    if (!W) return;
+
+    gallery.innerHTML = '';
+
+    const target = targetHeight(W);
+    computeLayout(IMAGES, W, target).forEach(({ start, end, height, full }) => {
+      const h = Math.round(height);
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.style.height = h + 'px';
+
+      // Widths from the exact (unrounded) row height. For full rows, round each
+      // tile's cumulative right edge rather than its width, so rounding never
+      // accumulates and the last tile lands exactly on the container edge.
+      const avail = W - GAP * (end - start - 1);
+      let edge = 0, prevEdge = 0;
+
+      for (let i = start; i < end; i++) {
+        const { src, aspect, title, meta, link } = IMAGES[i];
+
+        const item = document.createElement('a');
+        item.className = 'photo';
+        item.href = link;
+        item.target = '_blank';
+        item.rel = 'noopener noreferrer';
+
+        let w;
+        if (full) {
+          edge += height * aspect;
+          const rounded = Math.min(Math.round(edge), avail);
+          w = rounded - prevEdge;
+          prevEdge = rounded;
+        } else {
+          w = Math.round(h * aspect);
+        }
+        item.style.width = w + 'px';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = title;
+        img.loading = 'lazy';
+        img.addEventListener('load', () => img.classList.add('loaded'));
+
+        const overlay = document.createElement('div');
+        overlay.className = 'photo-overlay';
+        overlay.innerHTML =
+          `<div class="overlay-title">${title}</div>` +
+          `<div class="overlay-meta">${meta}</div>`;
+
+        item.appendChild(img);
+        item.appendChild(overlay);
+        row.appendChild(item);
+      }
+
+      gallery.appendChild(row);
+    });
+  }
+
+  // ── Responsive re-layout ──────────────────────────────────────────────────
+
+  let raf;
+  const ro = new ResizeObserver(() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(render);
+  });
+  ro.observe(document.getElementById('gallery'));
+
+  preloadAspects().then(render);
+</script>
+
+</body>
+</html>
