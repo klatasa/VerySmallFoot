@@ -1,2 +1,2 @@
-# VerySmallFoot
+# VerySmallFeet
 Image gallery
