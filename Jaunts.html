@@ -140,38 +140,37 @@
 
   // Local thumbnails, relative to this file's location in Claude/VerySmallFoot.
   const BASE_URL   = 'https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/';
-  const PHOTO_LINK = 'https://photos.app.goo.gl/gwe4wzxTrQJW8yMU9';
 
   // Aspect ratios are filled in by preloadAspects() before the first render.
   // Titles below are placeholders — edit each entry individually to customize
   // the title or link per image.
   const IMAGES = [
-    { src: `${BASE_URL}Jaunts01.jpg`, aspect: 3/2, title: 'Balloon Fest', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts02.jpg`, aspect: 3/2, title: 'Baltimore with Lil', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts03.jpg`, aspect: 3/2, title: 'Baltimore with Rizza', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts04.jpg`, aspect: 3/2, title: 'Baltimore Sunset', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts05.jpg`, aspect: 3/2, title: 'BattleShip NJ', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts06.jpg`, aspect: 3/2, title: 'Bethany', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts07.jpg`, aspect: 3/2, title: 'Cape Cod', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts08.jpg`, aspect: 3/2, title: 'Cape May', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts09.jpg`, aspect: 3/2, title: 'Davao', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts10.jpg`, aspect: 3/2, title: 'Dorney Park', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts11.jpg`, aspect: 3/2, title: 'Dutch Wonderland', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts12.jpg`, aspect: 3/2, title: 'Jim Thorpe', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts13.jpg`, aspect: 3/2, title: 'Lancaster', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts14.jpg`, aspect: 3/2, title: 'Leyte', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts15.jpg`, aspect: 3/2, title: 'Longwood', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts16.jpg`, aspect: 3/2, title: 'Manila', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts17.jpg`, aspect: 3/2, title: 'Memorial Day 2004', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts18.jpg`, aspect: 3/2, title: 'Ocean City', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts19.jpg`, aspect: 3/2, title: 'The Route 50 Repeat', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts20.jpg`, aspect: 3/2, title: 'Outer Banks', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts21.jpg`, aspect: 3/2, title: 'Philly Flower Show', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts22.jpg`, aspect: 3/2, title: 'Rehoboth', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts23.jpg`, aspect: 3/2, title: 'Washington D.C.', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts24.jpg`, aspect: 3/2, title: 'Return to D.C.', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts25.jpg`, aspect: 3/2, title: 'D.C. Trilogy', link: PHOTO_LINK },
-    { src: `${BASE_URL}Jaunts26.jpg`, aspect: 3/2, title: 'Wilmington', link: PHOTO_LINK },
+    { src: `${BASE_URL}Jaunts01.jpg`, aspect: 3/2, title: 'Balloon Fest', link: 'https://photos.app.goo.gl/qcM2wLr7TicbXL4Z9' },
+    { src: `${BASE_URL}Jaunts02.jpg`, aspect: 3/2, title: 'Baltimore with Lil', link: 'https://photos.app.goo.gl/qXWcn3Nu7X8BvPvi7' },
+    { src: `${BASE_URL}Jaunts03.jpg`, aspect: 3/2, title: 'Baltimore with Rizza', link: 'https://photos.app.goo.gl/zbZmBS7tyxyHHZCX9' },
+    { src: `${BASE_URL}Jaunts04.jpg`, aspect: 3/2, title: 'Baltimore Sunset', link: 'https://photos.app.goo.gl/zzWzkcrjvLuMqia97' },
+    { src: `${BASE_URL}Jaunts05.jpg`, aspect: 3/2, title: 'BattleShip NJ', link: 'https://photos.app.goo.gl/1CGoSwS49EAafahG6' },
+    { src: `${BASE_URL}Jaunts06.jpg`, aspect: 3/2, title: 'Bethany', link: 'https://photos.app.goo.gl/7AuxTAE1zPn76VXdA' },
+    { src: `${BASE_URL}Jaunts07.jpg`, aspect: 3/2, title: 'Cape Cod', link: 'https://photos.app.goo.gl/Rr7oGPgKFkXiaYwv8' },
+    { src: `${BASE_URL}Jaunts08.jpg`, aspect: 3/2, title: 'Cape May', link: 'https://photos.app.goo.gl/fd81UiUeppjvferRA' },
+    { src: `${BASE_URL}Jaunts09.jpg`, aspect: 3/2, title: 'Davao', link: 'https://photos.app.goo.gl/MeZ1iKmqMo4X5EGu9' },
+    { src: `${BASE_URL}Jaunts10.jpg`, aspect: 3/2, title: 'Dorney Park', link: 'https://photos.app.goo.gl/KJUxAbNzaJcVvnWt8' },
+    { src: `${BASE_URL}Jaunts11.jpg`, aspect: 3/2, title: 'Dutch Wonderland', link: 'https://photos.app.goo.gl/B6YBKCTh7brot9gV6' },
+    { src: `${BASE_URL}Jaunts12.jpg`, aspect: 3/2, title: 'Jim Thorpe', link: 'https://photos.app.goo.gl/J9pVE6H4sKwBjR1e7' },
+    { src: `${BASE_URL}Jaunts13.jpg`, aspect: 3/2, title: 'Lancaster', link: 'https://photos.app.goo.gl/d1gsJT41nYcyp6jz5' },
+    { src: `${BASE_URL}Jaunts14.jpg`, aspect: 3/2, title: 'Leyte', link: 'https://photos.app.goo.gl/Z4RnbrQSSgmuFzA4A' },
+    { src: `${BASE_URL}Jaunts15.jpg`, aspect: 3/2, title: 'Longwood', link: 'https://photos.app.goo.gl/V1wA6fFuJtjVZgkD7' },
+    { src: `${BASE_URL}Jaunts16.jpg`, aspect: 3/2, title: 'Manila', link: 'https://photos.app.goo.gl/Umxz2P6EkAofh5z19' },
+    { src: `${BASE_URL}Jaunts17.jpg`, aspect: 3/2, title: 'Memorial Day 2004', link: 'https://photos.app.goo.gl/6nfNRnrFk688ekWs9' },
+    { src: `${BASE_URL}Jaunts18.jpg`, aspect: 3/2, title: 'Ocean City', link: 'https://photos.app.goo.gl/b8p1ttBByv7jWGoN7' },
+    { src: `${BASE_URL}Jaunts19.jpg`, aspect: 3/2, title: 'The Route 50 Repeat', link: 'https://photos.app.goo.gl/EvyV4eq5VvBdUetU9' },
+    { src: `${BASE_URL}Jaunts20.jpg`, aspect: 3/2, title: 'Outer Banks', link: 'https://photos.app.goo.gl/uCzv26vTUmRTjL3XA' },
+    { src: `${BASE_URL}Jaunts21.jpg`, aspect: 3/2, title: 'Philly Flower Show', link: 'https://photos.app.goo.gl/4mxQ7gEdrw9kjFm38' },
+    { src: `${BASE_URL}Jaunts22.jpg`, aspect: 3/2, title: 'Rehoboth', link: 'https://photos.app.goo.gl/PA7Shg5PLpAiSrMv6' },
+    { src: `${BASE_URL}Jaunts23.jpg`, aspect: 3/2, title: 'Washington D.C.', link: 'https://photos.app.goo.gl/9812go3prpefFVcY9' },
+    { src: `${BASE_URL}Jaunts24.jpg`, aspect: 3/2, title: 'Return to D.C.', link: 'https://photos.app.goo.gl/G68Ryp4NaQxihMUaA' },
+    { src: `${BASE_URL}Jaunts25.jpg`, aspect: 3/2, title: 'D.C. Trilogy', link: 'https://photos.app.goo.gl/bifzZejJHXapHfGm9' },
+    { src: `${BASE_URL}Jaunts26.jpg`, aspect: 3/2, title: 'Wilmington', link: 'https://photos.app.goo.gl/A4krm6uDtW8ZGztz6' },
   ];
 
   function preloadAspects() {
