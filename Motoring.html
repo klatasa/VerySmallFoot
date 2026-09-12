@@ -36,13 +36,38 @@
       padding: 0 4rem 5rem;
     }
 
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
     .gallery-label {
       font-size: 0.68rem;
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 1.5rem;
+    }
+
+    .channel-link {
+      display: block;
+      flex-shrink: 0;
+      opacity: 0.8;
+      transition: opacity 0.25s ease;
+    }
+
+    .channel-link:hover,
+    .channel-link:focus-visible {
+      opacity: 1;
+    }
+
+    .channel-link img {
+      display: block;
+      height: 42px;
+      width: auto;
     }
 
     #gallery {
@@ -118,10 +143,15 @@
 </head>
 <body>
 
-<img id="banner" src="https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/TitleImage.jpg" alt="Very Small Foot">
+<img id="banner" src="https://raw.githubusercontent.com/klatasa/VerySmallFeet/refs/heads/main/images/TitleImage.jpg" alt="Very Small Foot">
 
 <main>
-  <p class="gallery-label">Motoring</p>
+  <div class="label-row">
+    <p class="gallery-label">Motoring</p>
+    <a class="channel-link" href="https://www.youtube.com/@verysmallfeet" target="_blank" rel="noopener noreferrer">
+      <img src="https://raw.githubusercontent.com/klatasa/VerySmallFeet/refs/heads/main/images/YTLink.jpg" alt="@verysmallfeet on YouTube" width="150" height="48">
+    </a>
+  </div>
   <div id="gallery"></div>
 </main>
 
@@ -138,8 +168,8 @@
     return TARGET_H;
   }
 
-  // Local thumbnails, relative to this file's location in Claude/VerySmallFoot.
-  const BASE_URL   = 'https://raw.githubusercontent.com/klatasa/VerySmallFoot/refs/heads/main/images/';
+  // Local thumbnails, relative to this file's location in Claude/VerySmallFeet.
+  const BASE_URL   = 'https://raw.githubusercontent.com/klatasa/VerySmallFeet/refs/heads/main/images/';
   
   // Aspect ratios are filled in by preloadAspects() before the first render.
   // Titles below are placeholders — edit each entry individually to customize
